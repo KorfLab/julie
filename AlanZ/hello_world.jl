@@ -1,3 +1,6 @@
+#hello world
 println("hello world")
-println("testing")
-print("testing")
+
+print("hello")
+println(" world")
+
