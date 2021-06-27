@@ -1,3 +1,5 @@
+using BioSequences
+
 function addition(x,y)
 	sum = x+y
 	return sum
@@ -13,3 +15,7 @@ println(f(4))
 
 println("""the sum of 2 and 7 is $(addition(2,7))""")
 #prints the sum of 2 and 7 is 9
+
+seq = randdnaseq(50)
+println(seq)
+println(typeof(seq))
