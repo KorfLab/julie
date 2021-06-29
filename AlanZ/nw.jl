@@ -28,6 +28,11 @@ seq2_length = sizeof(seq2)
 
 workspace = fill(0,(seq1_length+1,seq2_length+1))
 
+#Initialization
+for i in 2:seq1_length+1, j in 2:seq2_length+1
+	workspace[i,1] = workspace[i-1,1]+gap
+	workspace[1,j] = workspace[1,j-1]+gap
+end
 
 displaymatrix(workspace)
 
