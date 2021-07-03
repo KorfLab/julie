@@ -22,5 +22,9 @@ function orf()
         end 
     end 
     println(orfs)
-end 
+end
 orf() 
+""" 
+Variables in loops aren't global --> created "jay" to track "j"
+Want to look for other BioSequences functions to improve this program
+"""
