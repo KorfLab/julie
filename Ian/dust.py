@@ -33,10 +33,12 @@ w2 = arg.window
 
 for id, seq in korflib.read_fasta(arg.fasta):
 	print(f'>{id}')
-	masked = []
-	for nt in seq[0:w1]: masked.append(nt)
 	
-	# first window
+	# first half window is unmasked
+	masked = []
+	masked.append(seq[0:w1])
+	
+	# count first window
 	iw = seq[0:w2]
 	a = iw.count('A')
 	c = iw.count('C')
@@ -47,7 +49,7 @@ for id, seq in korflib.read_fasta(arg.fasta):
 		else:          masked.append('N')
 	else: masked.append(seq[w1])
 	
-	# all other windows
+	# count all other windows
 	for i in range(0, len(seq) - w2):
 		off = seq[i]
 		on = seq[i+w2]
@@ -68,8 +70,8 @@ for id, seq in korflib.read_fasta(arg.fasta):
 			else:          nt = 'N'
 		masked.append(nt)
 
-	# final half window
-	for nt in seq[-w1:]: masked.append(nt)
+	# final half window is unmasked
+	masked.append(seq[-1:])
 	
 	# output
 	masked = ''.join(masked)
