@@ -38,13 +38,24 @@ t = arg.entropy
 
 for id, seq in korflib.read_fasta(arg.fasta):
 	print(f'>{id}')
-	masked = ''
+	masked = []
+	#masked = ''
 	for i in range(len(seq) -w + 1):
 		h = dna_entropy(seq[i:i+w])
 		nt = seq[i]
 		if h < t:
 			if arg.lcmask: nt = nt.lower()
 			else:          nt = 'N'
-		masked += nt
-	for i in range(1, len(seq), 50):
-		print(seq[i:i+50])
+		masked.append(nt)
+		#masked += nt
+	print(''.join(masked))
+	#print(masked)
+	#for i in range(1, len(masked), 50):
+	#	print(masked[i:i+50])
+
+# 1 3.0
+# 2 5.9
+# 4 12.1
+# 8 24.9 24.3 24.8
+
+
