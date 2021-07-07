@@ -87,11 +87,17 @@ for record in reader
 	
 	# output masked sequence (except the final window currently)
 	s = join(masked)
-	for i in 1:50:length(s)
-		if i+50 > length(s) println(s[i:end])
-		else                println(s[i:i+50])
-		end
-	end
+	println(masked)
+	#for i in 1:50:length(s)
+	#	if i+50 > length(s) println(s[i:end])
+	#	else                println(s[i:i+50])
+	#	end
+	#end
 
 end
+
+# 1x 14.6
+# 2x 16.8
+# 4x 23.5
+# 8x 36.7 14.7 17.9
 

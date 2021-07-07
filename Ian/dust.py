@@ -2,13 +2,7 @@ import argparse
 import math
 import korflib
 
-def dna_entropy(s):
-	a, c, g, t = 0, 0, 0, 0
-	for nt in s:
-		if   nt == 'A': a += 1
-		elif nt == 'C': c += 1
-		elif nt == 'G': g += 1
-		elif nt == 'T': t += 1
+def entropy(a, c, g, t):
 	total = a + c + g + t
 	if total == 0: return 0
 	h = 0
@@ -21,30 +15,75 @@ def dna_entropy(s):
 ## Command Line Interface ##
 
 parser = argparse.ArgumentParser(description='dust.py')
-parser.add_argument('fasta', type=str, metavar='<file>',
-	help='fasta file')                
+parser.add_argument('fasta', type=str, metavar='<file>', help='fasta file')                
 parser.add_argument('--window', required=False, type=int, default=11,
-	metavar='<str>', help='optional string argument [%(default)i]')
+	metavar='<str>', help='window size, must be odd [%(default)i]')
 parser.add_argument('--entropy', required=False, type=float, default=1.1,
-	metavar='<int>', help='optional integer argument [%(default)f]')
+	metavar='<int>', help='entropy threshold [%(default)f]')
 parser.add_argument('--lcmask', action='store_true',
-	help='on/off switch')
+	help='use lowercase instead of N')
 arg = parser.parse_args()
+
+
+assert(arg.window % 2 == 1)
+w1 = arg.window // 2
+w2 = arg.window
 
 ## Main loop ##
 
-w = arg.window
-t = arg.entropy
-
 for id, seq in korflib.read_fasta(arg.fasta):
 	print(f'>{id}')
-	masked = ''
-	for i in range(len(seq) -w + 1):
-		h = dna_entropy(seq[i:i+w])
-		nt = seq[i]
-		if h < t:
+	
+	# first half window is unmasked
+	masked = []
+	masked.append(seq[0:w1])
+	
+	# count first window
+	iw = seq[0:w2]
+	a = iw.count('A')
+	c = iw.count('C')
+	g = iw.count('G')
+	t = iw.count('T')
+	if entropy(a, c, g, t) < arg.entropy:
+		if arg.lcmask: masked.append(seq[w1].lower())
+		else:          masked.append('N')
+	else: masked.append(seq[w1])
+	
+	# count all other windows
+	for i in range(0, len(seq) - w2):
+		off = seq[i]
+		on = seq[i+w2]
+		nt = seq[i+w1+1]
+		
+		if   off == 'A': a -= 1
+		elif off == 'C': c -= 1
+		elif off == 'G': g -= 1
+		elif off == 'T': t -= 1
+		
+		if   on == 'A': a += 1
+		elif on == 'C': c += 1
+		elif on == 'G': g += 1
+		elif on == 'T': t += 1
+		
+		if entropy(a, c, g, t) < arg.entropy:
 			if arg.lcmask: nt = nt.lower()
 			else:          nt = 'N'
-		masked += nt
-	for i in range(1, len(seq), 50):
-		print(seq[i:i+50])
+		masked.append(nt)
+
+	# final half window is unmasked
+	masked.append(seq[-1:])
+	
+	# output
+	masked = ''.join(masked)
+	for i in range(0, len(masked), 50):
+		print(masked[i:i+50])
+
+"""
+1x	2.0 (1 Mbp)
+2x	3.8
+4x	7.5
+8x	15.1
+16x	29.4
+"""
+
+
