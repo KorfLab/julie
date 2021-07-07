@@ -7,10 +7,10 @@ using FASTX
 function dna_entropy(s)
 	a, c, g, t = 0, 0, 0, 0
 	for nt in s
-		if     nt == DNA_A a += 1
-		elseif nt == DNA_C c += 1
-		elseif nt == DNA_G g += 1
-		elseif nt == DNA_T t += 1
+		if     nt == 'A' a += 1
+		elseif nt == 'C' c += 1
+		elseif nt == 'G' g += 1
+		elseif nt == 'T' t += 1
 		end
 	end
 	total = a + c + g + t
@@ -68,18 +68,24 @@ t = arg["entropy"]
 
 for record in reader
 	println(">", FASTA.identifier(record))
-	seq = FASTA.sequence(record)
+	dna_seq = FASTA.sequence(record)
+	chars = String[]
+	for i in 1 : length(dna_seq)
+		if haskey(bio2ascii, dna_seq[i]) nt = bio2ascii[dna_seq[i]]
+		else                             nt = "N"
+		end
+		push!(chars, nt)
+	end
+	seq = join(chars)
 	
 	# generate masked sequence
-	masked = String[]
+	masked = Char[]
 	for i in 1 : length(seq) -w
-		if haskey(bio2ascii, seq[i]) nt = bio2ascii[seq[i]]
-		else                         nt = "N"
-		end
 		h = dna_entropy(seq[i:i+w])
+		nt = seq[i]
 		if h < t
 			if arg["lcmask"] nt = lowercase(nt)
-			else             nt = "N"
+			else             nt = 'N'
 			end
 		end
 		push!(masked, nt)
@@ -87,7 +93,7 @@ for record in reader
 	
 	# output masked sequence (except the final window currently)
 	s = join(masked)
-	println(masked)
+	println(s)
 	#for i in 1:50:length(s)
 	#	if i+50 > length(s) println(s[i:end])
 	#	else                println(s[i:i+50])
@@ -100,4 +106,5 @@ end
 # 2x 16.8
 # 4x 23.5
 # 8x 36.7 14.7 17.9
+# 16x 22.1
 
