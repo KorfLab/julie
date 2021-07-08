@@ -14,7 +14,9 @@ cli=ArgParseSettings()
         #default=
     #next flag would go here
 end
+
 arg=parse_args(ARGS, cli)
+
 
 #if statements in Julia require an end at the end of the entire statement
 if splitext(arg["file"])[2]==".gz"
@@ -24,36 +26,38 @@ end
 
 println("running")
 
-contigs=0
-contig_lengths = []
-nt_length = 0
-nt_counts = Dict()
-
-println(contigs, nt_length, contig_lengths, nt_counts)
-
-for pair in myfasta
-    seq=FASTA.sequence(pair)
-    #seq = uppercase(seq)
-    println(seq)
-    len = length(seq)
-    println(len)
-    contigs += 1
-    #appending to contig_lengths
-    push!(contig_lengths, len)
-    nt_length += len
-
-    for i in 1:len
-        n = seq[i]
-        holder=get!(nt_counts, n, 0)
-        holder+=1
-        nt_counts[n] = holder
+function tester(myfasta)
+    contigs = 0
+    contig_lengths = []
+    nt_length = 0
+    nt_counts = Dict()
+    println(contigs, nt_length, contig_lengths, nt_counts)
+    for pair in myfasta
+        seq=FASTA.sequence(pair)
+        #seq = uppercase(seq)
+        println(seq)
+        len = length(seq)
+        println(len)
+        println(seq)
+        contigs = contigs + 1
+        #appending to contig_lengths
+        push!(contig_lengths, len)
+        nt_length = nt_length + len
+        for i in 1:len
+            n = seq[i]
+            holder=get!(nt_counts, n, 0)
+            holder+=1
+            nt_counts[n] = holder
+        end
     end
+    println(contigs)
+    println(contig_lengths)
+    println(nt_length)
+    println(nt_counts)
+
 end
 
-println(contigs)
-println(contig_lengths)
-println(nt_length)
-println(nt_counts)
+tester(myfasta)
 
 
 
