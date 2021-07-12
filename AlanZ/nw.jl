@@ -1,21 +1,32 @@
 seq1 = "AGGTC"
 seq2 = "AGGGTC"
 
-println("""seq1 is $(seq1)
-seq2 is $(seq2)""")
-
-#Scores
 match = 1
 mismatch = -1
 gap = -1
 
-println("""
-match score = $(match)
-mismatch score = $(mismatch)
-gap score = $(gap)
-""")
 
-function solvenw(seq1, seq2, match, mismatch, gap)
+function solvenw(seq_1, seq_2, match, mismatch, gap)
+	#Info
+	if length(seq_2) >= length(seq_1)
+		seq1=seq_1
+		seq2=seq_2
+	else
+		seq1=seq_2
+		seq2=seq_1
+	end
+	
+	
+	println("""seq1: $(seq1)
+		seq2: $(seq2)
+		""")
+
+	println("""
+		match score = $(match)
+		mismatch score = $(mismatch)
+		gap score = $(gap)
+		""")
+	
 	#Initializing Matrix 
 	seq1_length = sizeof(seq1)
 	seq2_length = sizeof(seq2)
@@ -53,6 +64,37 @@ function solvenw(seq1, seq2, match, mismatch, gap)
 	println("")
 	
 	#Trace Back
+	x = seq1_length+1
+	y = seq2_length+1
+	
+	traceback = []
+	
+	while x!=1
+		trace_gap = workspace[x,y] - gap
+		if seq1[x-1] == seq2[y-1]
+			match_mismatch = match
+		else
+			match_mismatch = mismatch
+		end
+
+		trace_diagnal = workspace[x,y] - match_mismatch
+		if trace_diagnal == workspace[x-1,y-1]
+			push!(traceback, "matmch/mismatch")
+			x = x-1
+			y = y-1
+		elseif trace_gap == workspace[x,y-1]
+			push!(traceback,"left_gap")
+			y = y-1
+		elseif trace_gap == workspace[x-1,y]
+			push!(traceback,"top_gap")
+			x = x-1
+		end
+	end
+	
+	println(traceback)
+	
+
+	
 end
 
 
