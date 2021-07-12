@@ -1,5 +1,5 @@
-seq1 = "AGGTC"
-seq2 = "AGGGTC"
+seq1 = "AGGTCAAG"
+seq2 = "AGGGTCAG"
 
 match = 1
 mismatch = -1
@@ -67,33 +67,61 @@ function solvenw(seq_1, seq_2, match, mismatch, gap)
 	x = seq1_length+1
 	y = seq2_length+1
 	
+	#test here
+	
+	#######################
+	
 	traceback = []
+	score = 0 
 	
 	while x!=1
 		trace_gap = workspace[x,y] - gap
 		if seq1[x-1] == seq2[y-1]
-			match_mismatch = match
+			trace_diagnal = workspace[x,y] - match
+			local_mm = match
 		else
-			match_mismatch = mismatch
+			trace_diagnal = workspace[x,y] - mismatch
+			local_mm = mismatch
 		end
 
-		trace_diagnal = workspace[x,y] - match_mismatch
+
 		if trace_diagnal == workspace[x-1,y-1]
-			push!(traceback, "matmch/mismatch")
+			push!(traceback, "match/mismatch")
 			x = x-1
 			y = y-1
+			score += local_mm
 		elseif trace_gap == workspace[x,y-1]
 			push!(traceback,"left_gap")
 			y = y-1
+			score += gap
 		elseif trace_gap == workspace[x-1,y]
 			push!(traceback,"top_gap")
 			x = x-1
+			score += gap
 		end
 	end
 	
 	println(traceback)
-	
 
+	new_seq1= ""
+	counter = 1
+
+	for i in length(traceback):-1:1
+		if traceback[i] == "match/mismatch"
+			new_seq1 *= seq1[counter]
+			counter += 1
+		elseif traceback[i] == "left_gap"
+			new_seq1 *= '-'
+		end
+	end
+	
+	println(seq2)
+	println(new_seq1)
+	
+	#Score not right! Fix here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	println("score = $(score)")
+	
+	#Review the program so that seq1 stays seq1 and seq2 stays seq2 !!!!!!!!!!!!!!!!!!!1
 	
 end
 
