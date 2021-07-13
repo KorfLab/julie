@@ -13,18 +13,30 @@ function skew1(chrom, seq, w)
 			elseif seq[j] == DNA_G g += 1
 			end
 		end
-		println("$chrom\t$i\t", (g-c)/(g+c))	
+		if (g+c) == 0 println("$chrom\t$i\t", 0)
+		else          println("$chrom\t$i\t", (g-c)/(g+c))
+		end
 	end
 end
 
 function skew2(chrom, seq, w)
+	for i = 1:length(seq) -w
+		comp = composition(seq[i:i+w])
+		c = comp[DNA_C]
+		g = comp[DNA_G]
+		if (g+c) == 0 println("$chrom\t$i\t", 0)
+		else          println("$chrom\t$i\t", (g-c)/(g+c))
+		end
+	end
 end
 
 function skew3(chrom, seq, w)
+	# first window
 end
 
+
 cli = ArgParseSettings()
-@add_arg_table cli begin
+@add_arg_table! cli begin
 	"--window"
 		help = "window size"
 		arg_type = Int
@@ -46,6 +58,7 @@ else
 	reader = FASTA.Reader(open(arg["fasta"]))
 end
 
+
 ## Main loop ##
 w = arg["window"]
 a = arg["algorithm"]
@@ -57,3 +70,5 @@ for record in reader
 	elseif a == 3 skew3(c, s, w)
 	end
 end
+
+
