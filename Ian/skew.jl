@@ -9,7 +9,7 @@ function skew1(chrom, seq, w)
 		g = 0
 		c = 0
 		for j = i:i+w
-			if 	   seq[j] == DNA_C c += 1
+			if     seq[j] == DNA_C c += 1
 			elseif seq[j] == DNA_G g += 1
 			end
 		end
