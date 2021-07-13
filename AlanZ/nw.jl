@@ -1,3 +1,9 @@
+#=
+To improve:
+-Only one possible best alignment calculated... Revise so that all possible alignments are calculated
+-Improve speed
+=#
+
 seq1 = "AGGTCAAG"
 seq2 = "AGGGTCAG"
 
