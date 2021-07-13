@@ -8,13 +8,6 @@ gap = -1
 
 function solvenw(seq_1, seq_2, match, mismatch, gap)
 	#Info
-	if length(seq_2) >= length(seq_1)
-		seq1=seq_1
-		seq2=seq_2
-	else
-		seq1=seq_2
-		seq2=seq_1
-	end
 	
 	
 	println("""seq1: $(seq1)
@@ -67,13 +60,9 @@ function solvenw(seq_1, seq_2, match, mismatch, gap)
 	x = seq1_length+1
 	y = seq2_length+1
 	
-	#test here
-	
-	#######################
 	
 	traceback = []
 	score = 0 
-	
 	while x!=1
 		trace_gap = workspace[x,y] - gap
 		if seq1[x-1] == seq2[y-1]
@@ -103,25 +92,34 @@ function solvenw(seq_1, seq_2, match, mismatch, gap)
 	
 	println(traceback)
 
-	new_seq1= ""
-	counter = 1
-
+	aligned_seq1 = ""
+	aligned_seq2 = ""
+	counter_seq1 = 1
+	counter_seq2 = 1
+	
 	for i in length(traceback):-1:1
 		if traceback[i] == "match/mismatch"
-			new_seq1 *= seq1[counter]
-			counter += 1
+			aligned_seq1 *= seq1[counter_seq1]
+			aligned_seq2 *= seq2[counter_seq2]
+			counter_seq1 += 1
+			counter_seq2 += 1
 		elseif traceback[i] == "left_gap"
-			new_seq1 *= '-'
+			aligned_seq1 *= '-'
+			aligned_seq2 *= seq2[counter_seq2]
+			counter_seq2 += 1
+		elseif traceback[i] == "top_gap"
+			aligned_seq2 *= '-'
+			aligned_seq1 *= seq1[counter_seq1]
+			counter_seq1 +=1
 		end
 	end
 	
-	println(seq2)
-	println(new_seq1)
+	println(aligned_seq1)
+	println(aligned_seq2)
 	
-	#Score not right! Fix here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	#Score
 	println("score = $(score)")
 	
-	#Review the program so that seq1 stays seq1 and seq2 stays seq2 !!!!!!!!!!!!!!!!!!!1
 	
 end
 
