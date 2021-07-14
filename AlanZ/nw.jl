@@ -2,15 +2,33 @@
 To improve:
 -Only one possible best alignment calculated... Revise so that all possible alignments are calculated
 -Improve speed
+-More user input options?
 =#
+using ArgParse
 
-seq1 = "AGGTCAAG"
-seq2 = "AGGGTCAG"
+cli = ArgParseSettings()
+@add_arg_table cli begin
+	"--match"
+		help = "match score"
+		arg_type = Int
+		default = 1
+	"--mismatch"
+		help = "mismatch score"
+		arg_type = Int
+		default = -1
+	"--gap"	
+		help = "gap score"
+		arg_type = Int
+		default = -1
+end
+arg = parse_args(ARGS, cli)
 
-match = 1
-mismatch = -1
-gap = -1
+seq1 = "AGGTCC"
+seq2 = "AGTTC"
 
+match = arg["match"]
+mismatch = arg["mismatch"]
+gap = arg["gap"]
 
 function solvenw(seq_1, seq_2, match, mismatch, gap)
 	#Info
@@ -38,11 +56,6 @@ function solvenw(seq_1, seq_2, match, mismatch, gap)
 		workspace[1,j] = workspace[1,j-1]+gap
 	end
 	
-	#Display
-	println("Initializaiton:")
-	display(workspace)
-	println("")
-	
 	#Fill
 	for i in 2:seq1_length+1
 		for j in 2:seq2_length+1
@@ -58,16 +71,15 @@ function solvenw(seq_1, seq_2, match, mismatch, gap)
 	end
 	
 	#Display
-	println("Fill:")
+	println("Matrix: ")
 	display(workspace)
-	println("")
 	
 	#Trace Back
 	x = seq1_length+1
 	y = seq2_length+1
 	
 	
-	traceback = []
+	traceback = String[]
 	score = 0 
 	while x!=1
 		trace_gap = workspace[x,y] - gap
@@ -96,7 +108,7 @@ function solvenw(seq_1, seq_2, match, mismatch, gap)
 		end
 	end
 	
-	println(traceback)
+	println("\r", traceback)
 
 	aligned_seq1 = ""
 	aligned_seq2 = ""
