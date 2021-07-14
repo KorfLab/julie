@@ -36,7 +36,7 @@ end
 
 
 cli = ArgParseSettings()
-@add_arg_table! cli begin
+@add_arg_table cli begin
 	"--window"
 		help = "window size"
 		arg_type = Int

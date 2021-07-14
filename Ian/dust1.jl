@@ -87,7 +87,7 @@ for record in reader
 	
 	# output masked sequence (except the final window currently)
 	s = join(masked)
-	println(masked)
+	#println(masked)
 	#for i in 1:50:length(s)
 	#	if i+50 > length(s) println(s[i:end])
 	#	else                println(s[i:i+50])
